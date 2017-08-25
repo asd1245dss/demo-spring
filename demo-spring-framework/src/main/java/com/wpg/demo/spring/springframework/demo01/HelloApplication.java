@@ -1,5 +1,7 @@
 package com.wpg.demo.spring.springframework.demo01;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
@@ -13,11 +15,19 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan
 class HelloApplication {
 
-    public static void main(String[] args) {
+    private static final Logger logger = LoggerFactory.getLogger(HelloApplication.class);
+
+    public static void main(String[] args) throws InterruptedException {
         ApplicationContext applicationContext = new AnnotationConfigApplicationContext(HelloApplication.class);
+
+        logger.debug("Springframework container refresh successfully !");
 
         MessagePrinter messagePrinter = applicationContext.getBean(MessagePrinter.class);
         messagePrinter.printMessage();
+
+        logger.debug("Springframework container destroy successfully !");
+
+        Thread.currentThread().join();
 
     }
 

@@ -18,7 +18,7 @@ class MessagePrinter {
     }
 
     void printMessage() {
-        System.out.printf("current class is %s", messageService.getMessage());
+        System.out.printf("current class is %s\n", messageService.getMessage());
     }
 
 }
