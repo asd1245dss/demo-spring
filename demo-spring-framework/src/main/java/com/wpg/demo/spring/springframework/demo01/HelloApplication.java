@@ -26,9 +26,6 @@ class HelloApplication {
         messagePrinter.printMessage();
 
         logger.debug("Springframework container destroy successfully !");
-
-        Thread.currentThread().join();
-
     }
 
 }
