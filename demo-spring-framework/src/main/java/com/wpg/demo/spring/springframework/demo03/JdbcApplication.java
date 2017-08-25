@@ -10,13 +10,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author ChangWei Li
@@ -24,6 +22,7 @@ import java.util.Map;
  */
 @Configuration
 @ComponentScan
+@EnableTransactionManagement
 public class JdbcApplication {
 
     private static final Logger logger = LoggerFactory.getLogger(JdbcApplication.class);
@@ -39,6 +38,11 @@ public class JdbcApplication {
     }
 
     @Bean
+    public PlatformTransactionManager txManager(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
+
+    @Bean
     public JdbcTemplate jdbcTemplate(DataSource dataSource) {
         return new JdbcTemplate(dataSource);
     }
@@ -46,11 +50,9 @@ public class JdbcApplication {
     public static void main(String[] args) {
         ApplicationContext applicationContext = new AnnotationConfigApplicationContext(JdbcApplication.class);
 
-        JdbcTemplate jdbcTemplate = applicationContext.getBean(JdbcTemplate.class);
+        DeviceDataService deviceDataService = applicationContext.getBean(DeviceDataService.class);
 
-        List<Map<String, Object>> resultList = jdbcTemplate.queryForList("SELECT current_timestamp");
-
-        logger.debug(resultList.toString());
+        logger.debug(deviceDataService.queryLatestDeviceData("").toString());
     }
 
 }
