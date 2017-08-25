@@ -14,7 +14,7 @@ public class Receiver {
 
     private static final Logger logger = LoggerFactory.getLogger(Receiver.class);
 
-    @JmsListener(destination = "mailbox", containerFactory = "mailFactory")
+    @JmsListener(destination = "emailbox", containerFactory = "mailFactory")
     public void receiveEmailMessage(Email email) {
         logger.info("Received < {} >", email);
     }

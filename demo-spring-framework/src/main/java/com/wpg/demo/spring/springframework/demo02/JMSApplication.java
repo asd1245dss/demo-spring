@@ -28,7 +28,7 @@ import javax.jms.ConnectionFactory;
 public class JMSApplication {
 
     @Bean
-    public JmsListenerContainerFactory<?> mailFactory(ConnectionFactory connectionFactory, MessageConverter messageConverter) {
+    public JmsListenerContainerFactory<DefaultMessageListenerContainer> mailFactory(ConnectionFactory connectionFactory, MessageConverter messageConverter) {
         DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);
         factory.setMessageConverter(messageConverter);
@@ -61,7 +61,10 @@ public class JMSApplication {
 
     @Bean
     public JmsTemplate chatJmsTemplate(ConnectionFactory connectionFactory) {
-        return new JmsTemplate(connectionFactory);
+        JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory);
+        jmsTemplate.setPubSubDomain(true);
+
+        return jmsTemplate;
     }
 
     @Bean
@@ -77,9 +80,10 @@ public class JMSApplication {
         ApplicationContext applicationContext = new AnnotationConfigApplicationContext(JMSApplication.class);
 
         JmsTemplate emailJmsTemplate = applicationContext.getBean("emailJmsTemplate", JmsTemplate.class);
-//        JmsTemplate chatJmsTemplate = applicationContext.getBean("chatJmsTemplate", JmsTemplate.class);
+        JmsTemplate chatJmsTemplate = applicationContext.getBean("chatJmsTemplate", JmsTemplate.class);
 
         emailJmsTemplate.convertAndSend("emailbox", new Email("info@example.com", "Hello"));
+        chatJmsTemplate.convertAndSend("chatbox", new Email("info@example.com", "Hello").toString());
 
     }
 
