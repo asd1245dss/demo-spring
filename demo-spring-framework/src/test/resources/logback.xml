@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	scan 热部署log配置文件
+-->
+<configuration scan="false" debug="false">
+
+	<!-- 日志的根目录 -->
+	<property name="logHome" value="target" />
+	<!-- 日志文件名称 -->
+	<property name="appName" value="demo-spring-framework-test" />
+	<property name="logPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n" />
+
+	<appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+		<!-- 日志输出格式 %d日期时间 %thread线程名 %msg日志消息 %n换行 -->
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>${logPattern}</pattern>
+		</encoder>
+	</appender>
+
+	<!-- 滚动记录日志文件 -->
+	<appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!-- 指定日志文件名称 -->
+		<file>${logHome}/${appName}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${logHome}/${appName}-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+			<!-- 按天进行日志滚动 -->
+			<MaxHistory>7</MaxHistory>
+			<!-- 超过文件最大容量，根据i进行滚动 -->
+			<maxFileSize>100MB</maxFileSize>
+			<!-- 日志总量 -->
+			<totalSizeCap>1GB</totalSizeCap>
+		</rollingPolicy>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>${logPattern}</pattern>
+		</encoder>
+	</appender>
+
+	<!-- socket -->
+	<appender name="clientSocketAppender" class="ch.qos.logback.classic.net.SocketAppender">
+		<remoteHost>localhost</remoteHost>
+		<port>5000</port>
+		<reconnectionDelay>10000</reconnectionDelay>
+		<includeCallerData>false</includeCallerData>
+	</appender>
+
+	<appender name="serverSocketAppender" class="ch.qos.logback.classic.net.server.ServerSocketAppender">
+		<port>5000</port>
+		<includeCallerData>false</includeCallerData>
+	</appender>
+
+	<root level="DEBUG">
+		<appender-ref ref="consoleAppender" />
+		<appender-ref ref="fileAppender" />
+		<!--<appender-ref ref="clientSocketAppender" />-->
+		<!--<appender-ref ref="serverSocketAppender" />-->
+	</root>
+
+</configuration>

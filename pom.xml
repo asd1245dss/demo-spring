@@ -20,6 +20,7 @@
 
 	<modules>
 		<module>demo-spring-framework</module>
+		<module>demo-spring-boot</module>
 	</modules>
 
 	<properties>
