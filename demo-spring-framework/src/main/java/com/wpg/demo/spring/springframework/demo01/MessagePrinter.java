@@ -9,9 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 class MessagePrinter {
 
-
     private final MessageService messageService;
-
 
     MessagePrinter(MessageService messageService) {
         this.messageService = messageService;

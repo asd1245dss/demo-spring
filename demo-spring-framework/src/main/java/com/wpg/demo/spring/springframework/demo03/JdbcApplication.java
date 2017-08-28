@@ -2,8 +2,7 @@ package com.wpg.demo.spring.springframework.demo03;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -23,9 +22,8 @@ import javax.sql.DataSource;
 @Configuration
 @ComponentScan
 @EnableTransactionManagement
+@Slf4j
 public class JdbcApplication {
-
-    private static final Logger logger = LoggerFactory.getLogger(JdbcApplication.class);
 
     @Bean
     public DataSource dataSource() {
@@ -52,7 +50,7 @@ public class JdbcApplication {
 
         DeviceDataService deviceDataService = applicationContext.getBean(DeviceDataService.class);
 
-        logger.debug(deviceDataService.queryLatestDeviceData("").toString());
+        log.debug(deviceDataService.queryLatestDeviceData("").toString());
     }
 
 }

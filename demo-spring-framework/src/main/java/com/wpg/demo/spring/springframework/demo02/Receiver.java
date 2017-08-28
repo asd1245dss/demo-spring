@@ -1,7 +1,6 @@
 package com.wpg.demo.spring.springframework.demo02;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;
 
@@ -10,18 +9,17 @@ import org.springframework.stereotype.Service;
  * @version 2017-08-25 11:31
  */
 @Service
+@Slf4j
 public class Receiver {
-
-    private static final Logger logger = LoggerFactory.getLogger(Receiver.class);
 
     @JmsListener(destination = "emailbox", containerFactory = "mailFactory")
     public void receiveEmailMessage(Email email) {
-        logger.info("Received < {} >", email);
+        log.info("Received < {} >", email);
     }
 
     @JmsListener(destination = "chatbox", containerFactory = "chartFactory")
     public void receiveChatMessage(String msg) {
-        logger.info("Received < {} >", msg);
+        log.info("Received < {} >", msg);
     }
 
 }
