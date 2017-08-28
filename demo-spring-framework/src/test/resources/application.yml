@@ -1,0 +1,3 @@
+app:
+  name: test-demo-spring
+  api: enable

@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.test.annotation.Repeat;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -20,7 +21,7 @@ import static org.junit.Assert.assertEquals;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ApplicationProperties.class)
-@TestPropertySource(properties = {"app.name=test-demo-spring", "test=ok"})
+@TestPropertySource(properties = {"app.name=test-demo-spring", "test=ok"}, locations = "classpath:application.yml")
 @Slf4j
 public class ApplicationPropertiesTest {
 
@@ -46,6 +47,16 @@ public class ApplicationPropertiesTest {
         log.info("application => {}", env);
 
         assertEquals(expectedExtraProperties, env.getProperty("test"));
+    }
+
+    @Test
+    @Repeat(3)
+    public void read_extra_test_env_yml_file() {
+        String expectedExtraProperties = "ok";
+
+        log.info("application => {}", env);
+
+        assertEquals("enable", env.getProperty("api"));
     }
 
 }
