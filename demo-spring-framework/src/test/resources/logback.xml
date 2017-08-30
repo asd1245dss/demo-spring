@@ -35,24 +35,9 @@
 		</encoder>
 	</appender>
 
-	<!-- socket -->
-	<appender name="clientSocketAppender" class="ch.qos.logback.classic.net.SocketAppender">
-		<remoteHost>localhost</remoteHost>
-		<port>5000</port>
-		<reconnectionDelay>10000</reconnectionDelay>
-		<includeCallerData>false</includeCallerData>
-	</appender>
-
-	<appender name="serverSocketAppender" class="ch.qos.logback.classic.net.server.ServerSocketAppender">
-		<port>5000</port>
-		<includeCallerData>false</includeCallerData>
-	</appender>
-
 	<root level="DEBUG">
 		<appender-ref ref="consoleAppender" />
 		<appender-ref ref="fileAppender" />
-		<!--<appender-ref ref="clientSocketAppender" />-->
-		<!--<appender-ref ref="serverSocketAppender" />-->
 	</root>
 
 </configuration>
