@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import java.io.*;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
@@ -22,7 +21,8 @@ public class BIOTest {
     @Test
     public void test_bio_server() throws IOException {
         ExecutorService executorService = Executors.newFixedThreadPool(10);
-        ServerSocket serverSocket = new ServerSocket(8181, 2, InetAddress.getByName("0.0.0.0"));
+        ServerSocket serverSocket = new ServerSocket(8181, 1);
+
         final boolean[] stop = {true};
 
         while (stop[0]) {
@@ -55,26 +55,43 @@ public class BIOTest {
 
     @Test
     public void test_bio_client() throws IOException {
-        Socket socket = new Socket("www.baidu.com", 80);
+        long start = System.currentTimeMillis();
+        Socket socket = new Socket("jikan.me", 80);
 
         PrintWriter printWriter = new PrintWriter(socket.getOutputStream(), true);
         BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-        printWriter.println("GET / HTTP/1.1");
-        printWriter.println("Host: www.baidu.com");
-        printWriter.println("Accept-Encoding: gzip");
-        printWriter.println("Connection: Close");
-        printWriter.println();
+        String request = "GET /api/anime/1 HTTP/1.1" +
+                "\r\n" +
+                "Host: jikan.me" +
+                "\r\n" +
+                "Connection: keep-alive" +
+                "\r\n";
 
-        String msg;
+        printWriter.println(request);
 
-        while ((msg = reader.readLine()) != null) {
-            log.info(msg);
+        StringBuilder msg = new StringBuilder();
+        boolean ready = false;
+
+        while (true) {
+            if (reader.ready()) {
+                ready = true;
+                int tmp = reader.read();
+
+                msg.append((char) tmp);
+            } else {
+                if (ready) {
+                    break;
+                }
+            }
         }
+
+        log.info("\nelapsed time: {}\ncontent: \n{}", System.currentTimeMillis() - start, msg.toString());
 
         reader.close();
         printWriter.close();
         socket.close();
+
     }
 
     @Test
