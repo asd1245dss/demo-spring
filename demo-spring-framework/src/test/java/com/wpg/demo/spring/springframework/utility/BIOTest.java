@@ -1,11 +1,13 @@
 package com.wpg.demo.spring.springframework.utility;
 
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.zip.GZIPInputStream;
@@ -28,19 +30,18 @@ public class BIOTest {
         while (stop[0]) {
             Socket socket = serverSocket.accept();
             executorService.execute(() -> {
+
                 try (
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))
+                    PrintWriter printWriter = new PrintWriter(socket.getOutputStream());
+                    Request request = new Request(socket.getInputStream())
                 ) {
                     log.info("new client {} has connected to the server", socket.getInetAddress().getHostAddress());
-                    String tmp;
-                    while ((tmp = reader.readLine()) != null) {
-                        if ("shutdown".equals(tmp)) {
-                            stop[0] = false;
-                            log.info("receive shutdown command");
-                            break;
-                        }
-                        log.info("{} receive => {}", socket, tmp);
-                    }
+
+                    printWriter.println("echo success");
+                    printWriter.flush();
+
+                    request.parse();
+                    log.info("{} receive => {}", socket, request.getMsg());
 
                 } catch (Exception ignore) {
 
@@ -56,39 +57,21 @@ public class BIOTest {
     @Test
     public void test_bio_client() throws IOException {
         long start = System.currentTimeMillis();
-        Socket socket = new Socket("jikan.me", 80);
+        Socket socket = new Socket("i1.haidii.com", 80);
 
         PrintWriter printWriter = new PrintWriter(socket.getOutputStream(), true);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-        String request = "GET /api/anime/1 HTTP/1.1" +
+        String requestContent = "GET /v/1493966112/i1/css/dict.min.css HTTP/1.1" +
                 "\r\n" +
-                "Host: jikan.me" +
+                "Host: i1.haidii.com" +
                 "\r\n" +
-                "Connection: keep-alive" +
+                "Connection: closed" +
                 "\r\n";
 
-        printWriter.println(request);
+        printWriter.println(requestContent);
 
-        StringBuilder msg = new StringBuilder();
-        boolean ready = false;
+        log.info("\nelapsed time: {}\ncontent: \n{}", System.currentTimeMillis() - start, Request.readAll(socket.getInputStream()));
 
-        while (true) {
-            if (reader.ready()) {
-                ready = true;
-                int tmp = reader.read();
-
-                msg.append((char) tmp);
-            } else {
-                if (ready) {
-                    break;
-                }
-            }
-        }
-
-        log.info("\nelapsed time: {}\ncontent: \n{}", System.currentTimeMillis() - start, msg.toString());
-
-        reader.close();
         printWriter.close();
         socket.close();
 
@@ -148,6 +131,101 @@ public class BIOTest {
 
         inputStream.close();
         gzipInputStream.close();
+    }
+
+    @Test
+    public void read_env_user_dir() {
+        log.info("user.dir => {}", System.getProperty("user.dir"));
+    }
+
+    @Test
+    public void split_request_content() {
+        String request = "GET /api/anime/1 HTTP/1.1" +
+                "\r\n" +
+                "Host: jikan.me" +
+                "\r\n" +
+                "Connection: closed" +
+                "\r\n";
+
+        log.info("{}", Arrays.toString(request.split("\r\n")));
+    }
+
+}
+
+@Data
+@Slf4j
+class Request implements Closeable {
+
+    private InputStream inputStream;
+
+    private String msg;
+
+    private String uri;
+
+    private String header;
+
+    private String content;
+
+    Request(InputStream inputStream) {
+        this.inputStream = inputStream;
+    }
+
+    static String readAll(InputStream inputStream) {
+        StringBuilder msg = new StringBuilder();
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+
+            boolean ready = false;
+
+            while (true) {
+                if (reader.ready()) {
+                    ready = true;
+                    int tmp = reader.read();
+
+                    msg.append((char) tmp);
+                } else {
+                    if (ready) {
+                        break;
+                    }
+                }
+            }
+
+        } catch (Exception ignore) {
+
+        }
+
+        return msg.toString();
+    }
+
+    void parse() {
+        this.msg = readAll(inputStream);
+
+        if (msg.length() > 0) {
+            int headerIndex = msg.indexOf("\r\n\r\n");
+            int uriStartIndex = msg.indexOf(" ");
+            int uriEndIndex = msg.indexOf(" ", uriStartIndex + 1);
+            this.uri = msg.substring(uriStartIndex, uriEndIndex);
+            this.header = msg.substring(uriEndIndex + 1, headerIndex);
+            this.content = msg.substring(headerIndex + 4);
+        }
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (inputStream != null)
+            inputStream.close();
+        log.info("socket closed successfully !");
+    }
+}
+
+@Data
+@Slf4j
+class Response {
+
+    private OutputStream outputStream;
+
+    public Response(OutputStream outputStream) {
+        this.outputStream = outputStream;
     }
 
 }
