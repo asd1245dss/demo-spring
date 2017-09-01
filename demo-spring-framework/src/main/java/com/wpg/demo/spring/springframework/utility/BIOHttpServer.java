@@ -26,13 +26,17 @@ class BIOHttpServer {
             executorService.execute(() -> {
 
                 try (
-                        Request request = new Request(socket.getInputStream());
-                        Response response = new Response(request, socket.getOutputStream())
+                    Request request = new Request(socket.getInputStream());
+                    Response response = new Response(request, socket.getOutputStream())
                 ) {
                     log.info("new client {} has connected to the server", socket.getInetAddress().getHostAddress());
 
                     request.parse();
                     response.sendStaticResource();
+
+                    if ("/shutdown".equals(request.getUri())) {
+                        stop[0] = false;
+                    }
 
                     log.info("{} receive => \n{}", socket, request.getMsg());
 

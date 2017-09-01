@@ -1,16 +1,20 @@
 package com.wpg.demo.spring.springframework.utility;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 import java.io.*;
 
-@Data
 @Slf4j
-public class Response implements Closeable {
+public class Response extends ResponseAdapter implements Closeable {
 
     private static final String WEB_ROOT = System.getProperty("user.dir");
 
+    @Getter
+    @Setter
     private Request request;
 
     private OutputStream outputStream;
@@ -60,5 +64,30 @@ public class Response implements Closeable {
         if (outputStream != null)
             outputStream.close();
         log.info("socket closed successfully !");
+    }
+
+    @Override
+    public ServletOutputStream getOutputStream() throws IOException {
+        return new ServletOutputStream() {
+            @Override
+            public boolean isReady() {
+                return false;
+            }
+
+            @Override
+            public void setWriteListener(WriteListener listener) {
+
+            }
+
+            @Override
+            public void write(int b) throws IOException {
+                outputStream.write(b);
+            }
+        };
+    }
+
+    @Override
+    public PrintWriter getWriter() throws IOException {
+        return new PrintWriter(outputStream, true);
     }
 }
