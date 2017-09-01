@@ -11,9 +11,9 @@ import java.net.Socket;
  * @version 2017-09-01 13:53
  */
 @Slf4j
-public class BIOHttpClient {
+class BIOHttpClient {
 
-    public void init() throws IOException {
+    void init() throws IOException {
         long start = System.currentTimeMillis();
         Socket socket = new Socket("avatar.csdn.net", 80);
 

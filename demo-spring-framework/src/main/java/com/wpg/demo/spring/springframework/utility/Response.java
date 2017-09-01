@@ -15,12 +15,12 @@ public class Response implements Closeable {
 
     private OutputStream outputStream;
 
-    public Response(Request request, OutputStream outputStream) {
+    Response(Request request, OutputStream outputStream) {
         this.request = request;
         this.outputStream = outputStream;
     }
 
-    public void sendStaticResource() {
+    void sendStaticResource() {
         try {
             //content-length could determine the browser receive the reponse
             String message = "HTTP/1.1 200 OK\r\n" +

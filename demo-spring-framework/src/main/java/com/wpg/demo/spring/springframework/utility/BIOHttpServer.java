@@ -13,9 +13,9 @@ import java.util.concurrent.Executors;
  * @version 2017-09-01 13:52
  */
 @Slf4j
-public class BIOHttpServer {
+class BIOHttpServer {
 
-    public void init() throws IOException {
+    void init() throws IOException {
         ExecutorService executorService = Executors.newFixedThreadPool(10);
         ServerSocket serverSocket = new ServerSocket(8181, 1);
 

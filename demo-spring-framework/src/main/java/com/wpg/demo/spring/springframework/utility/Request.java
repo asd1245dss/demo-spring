@@ -19,11 +19,11 @@ public class Request implements Closeable {
 
     private String content;
 
-    public Request(InputStream inputStream) {
+    Request(InputStream inputStream) {
         this.inputStream = inputStream;
     }
 
-    public static String readAll(InputStream inputStream) {
+    static String readAll(InputStream inputStream) {
         StringBuilder msg = new StringBuilder();
 
         try {
@@ -51,7 +51,7 @@ public class Request implements Closeable {
         return msg.toString();
     }
 
-    public void parse() {
+    void parse() {
         this.msg = readAll(inputStream);
 
         if (msg.length() > 0) {
