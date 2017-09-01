@@ -5,6 +5,17 @@
         <title>Hello Embedded Tomcat</title>
     </head>
     <body>
-        <p>Hello Embedded Tomcat</p>
+        <div id="container">
+            <p>{{ msg }}</p>
+        </div>
+        <script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+        <script>
+            new Vue({
+                el: '#container',
+                data: {
+                    msg: 'Hello Vue'
+                }
+            });
+        </script>
     </body>
 </html>
