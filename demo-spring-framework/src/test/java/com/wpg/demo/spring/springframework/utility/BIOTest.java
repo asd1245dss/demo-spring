@@ -32,16 +32,15 @@ public class BIOTest {
             executorService.execute(() -> {
 
                 try (
-                    PrintWriter printWriter = new PrintWriter(socket.getOutputStream());
-                    Request request = new Request(socket.getInputStream())
+                    Request request = new Request(socket.getInputStream());
+                    Response response = new Response(request, socket.getOutputStream())
                 ) {
                     log.info("new client {} has connected to the server", socket.getInetAddress().getHostAddress());
 
-                    printWriter.println("echo success");
-                    printWriter.flush();
-
                     request.parse();
-                    log.info("{} receive => {}", socket, request.getMsg());
+                    response.sendStaticResource();
+
+                    log.info("{} receive => \n{}", socket, request.getMsg());
 
                 } catch (Exception ignore) {
 
@@ -57,13 +56,15 @@ public class BIOTest {
     @Test
     public void test_bio_client() throws IOException {
         long start = System.currentTimeMillis();
-        Socket socket = new Socket("i1.haidii.com", 80);
+        Socket socket = new Socket("avatar.csdn.net", 80);
 
         PrintWriter printWriter = new PrintWriter(socket.getOutputStream(), true);
 
-        String requestContent = "GET /v/1493966112/i1/css/dict.min.css HTTP/1.1" +
+        String requestContent = "GET /B/0/E/1_yankai0219.jpg HTTP/1.1" +
                 "\r\n" +
-                "Host: i1.haidii.com" +
+                "Host: avatar.csdn.net" +
+                "\r\n" +
+                "Referer: http://blog.csdn.net/yankai0219/article/details/8269922" +
                 "\r\n" +
                 "Connection: closed" +
                 "\r\n";
@@ -173,7 +174,8 @@ class Request implements Closeable {
     static String readAll(InputStream inputStream) {
         StringBuilder msg = new StringBuilder();
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
             boolean ready = false;
 
@@ -204,7 +206,7 @@ class Request implements Closeable {
             int headerIndex = msg.indexOf("\r\n\r\n");
             int uriStartIndex = msg.indexOf(" ");
             int uriEndIndex = msg.indexOf(" ", uriStartIndex + 1);
-            this.uri = msg.substring(uriStartIndex, uriEndIndex);
+            this.uri = msg.substring(uriStartIndex + 1, uriEndIndex);
             this.header = msg.substring(uriEndIndex + 1, headerIndex);
             this.content = msg.substring(headerIndex + 4);
         }
@@ -220,12 +222,58 @@ class Request implements Closeable {
 
 @Data
 @Slf4j
-class Response {
+class Response implements Closeable {
+
+    private static final String WEB_ROOT = System.getProperty("user.dir");
+
+    private Request request;
 
     private OutputStream outputStream;
 
-    public Response(OutputStream outputStream) {
+    Response(Request request, OutputStream outputStream) {
+        this.request = request;
         this.outputStream = outputStream;
     }
 
+    void sendStaticResource() {
+        try {
+            //content-length could determine the browser receive the reponse
+            String message = "HTTP/1.1 200 OK\r\n" +
+                    "Content-Type: text/html;charset=utf-8\r\n" +
+                    "Connection: Keep-Alive\r\n" +
+                    "Server: BIO_JAVA/1.1\r\n" +
+                    "X-Ua-Compatible: IE=Edge,chrome=1\r\n" +
+                    "Set-Cookie: BDSVRTM=131; path=/\r\n" +
+                    "\r\n";
+            File file = new File(WEB_ROOT, "target/classes" + request.getUri());
+            if (file.isFile() && file.exists()) {
+                InputStream inputStream = new FileInputStream(file);
+                message += Request.readAll(inputStream);
+            } else {
+                message = "HTTP/1.1 404 File Not Found\r\n" +
+                        "Content-Type: text/html;charset=utf-8\r\n" +
+                        "Content-Length: 23\r\n" +
+                        "Connection: Keep-Alive\r\n" +
+                        "Server: BIO_JAVA/1.1\r\n" +
+                        "X-Ua-Compatible: IE=Edge,chrome=1\r\n" +
+                        "Set-Cookie: BDSVRTM=131; path=/\r\n" +
+                        "\r\n" +
+                        "<h1>File Not Found</h1>";
+            }
+
+            outputStream.write(message.getBytes());
+
+            outputStream.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (outputStream != null)
+            outputStream.close();
+        log.info("socket closed successfully !");
+    }
 }
