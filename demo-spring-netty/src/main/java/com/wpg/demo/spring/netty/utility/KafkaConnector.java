@@ -1,5 +1,6 @@
 package com.wpg.demo.spring.netty.utility;
 
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQBytesMessage;
@@ -10,11 +11,22 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.KeyValue;
+import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.KStreamBuilder;
+import org.apache.kafka.streams.kstream.KTable;
+import org.apache.kafka.streams.processor.TimestampExtractor;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import javax.jms.*;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Properties;
+import java.util.*;
+
+import static com.alibaba.fastjson.JSON.parseObject;
 
 /**
  * @author ChangWei Li
@@ -50,11 +62,11 @@ public class KafkaConnector {
                 if (exception != null) {
                     exception.printStackTrace();
                     log.error("send message failed");
-                } else {
-                    log.info("my-topic => {}", recieveMsg);
                 }
             });
         });
+
+        new Thread(KafkaConnector::stream).start();
     }
 
     private static Producer<String, String> produce() {
@@ -95,10 +107,64 @@ public class KafkaConnector {
                     exit = true;
                     break;
                 }
-
-                log.info("offset = {}, key = {}, value = {}{}", record.offset(), record.key(), record.value());
             }
         }
     }
 
+    private static void stream() {
+        DateTimeFormatter dateTimeFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+        Properties config = new Properties();
+        config.put(StreamsConfig.APPLICATION_ID_CONFIG, "onlineData");
+        config.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        config.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+        config.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.Double().getClass());
+//        config.put(StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG, EventTimeExtractor.class);
+
+        KStreamBuilder streamBuilder = new KStreamBuilder();
+        KStream<String, String> onlineData = streamBuilder.stream(Serdes.String(), Serdes.String(),"my-topic");
+        KStream<String, Double> serviceData = onlineData
+                .filter((k, v) -> v.contains("2017052701"))
+                .flatMap((k, v) -> {
+                    RealtimeData realtimeData = parseObject(v, RealtimeData.class);
+                    String deviceId = realtimeData.getDeviceId();
+                    String dateTime = DateTime.parse(realtimeData.getTimestamp(), dateTimeFormat).toString("yyyyMMddHHmm");
+
+                    Map<String, String> valuesMap = realtimeData.getValues();
+                    List<KeyValue<String, Double>> resut = new ArrayList<>(valuesMap.size());
+                    valuesMap.forEach((key, values) -> resut.add(new KeyValue<>(String.format("%s|%s|%s", dateTime, deviceId, key), Double.parseDouble(values))));
+
+                    return resut;
+                });
+//        KTable<String, Double> wordAvg = serviceData
+//                .groupByKey()
+//                .reduce(((value1, value2) -> value1 + value2));
+
+        KTable<String, Long> wordCount = serviceData
+                .groupByKey()
+                .count("CountsA");
+
+//        wordAvg.to(Serdes.String(), Serdes.Double(), "avg-onlineData-topic");
+        wordCount.to(Serdes.String(), Serdes.Long(), "count-onlineData-topic");
+        KafkaStreams streams = new KafkaStreams(streamBuilder, config);
+        streams.start();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
+    }
+
+}
+
+@Data
+class RealtimeData {
+    private String deviceId;
+    private String timestamp;
+    private Map<String, String> values;
+}
+
+class EventTimeExtractor implements TimestampExtractor {
+
+    @Override
+    public long extract(ConsumerRecord<Object, Object> record, long previousTimestamp) {
+        RealtimeData realtimeData = (RealtimeData) record.value();
+        return DateTime.parse(realtimeData.getTimestamp()).getMillis();
+    }
 }
