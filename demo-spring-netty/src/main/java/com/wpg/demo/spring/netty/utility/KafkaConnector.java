@@ -46,7 +46,14 @@ public class KafkaConnector {
 
             String recieveMsg = new String(bytesMessage.getContent().data);
 
-            producer.send(new ProducerRecord<>("my-topic", recieveMsg));
+            producer.send(new ProducerRecord<>("my-topic", recieveMsg), (metadata, exception) -> {
+                if (exception != null) {
+                    exception.printStackTrace();
+                    log.error("send message failed");
+                } else {
+                    log.info("my-topic => {}", recieveMsg);
+                }
+            });
         });
     }
 
@@ -61,9 +68,7 @@ public class KafkaConnector {
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
-        Producer<String, String> producer = new KafkaProducer<>(props);
-
-        return producer;
+        return new KafkaProducer<>(props);
     }
 
     private static void consume() {
