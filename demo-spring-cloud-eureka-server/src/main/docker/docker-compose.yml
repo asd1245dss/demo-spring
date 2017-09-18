@@ -1,0 +1,32 @@
+version: '3'
+services:
+  eurekaServer1:
+    image: asd1245dss/eureka-server
+    networks:
+      default:
+        aliases:
+          - eurekaServer
+    ports:
+      - "8761:8761"
+    environment:
+      - EUREKA_SERVER_LIST=http://eurekaServer2:8761/eureka/,http://eurekaServer3:8761/eureka/
+  eurekaServer2:
+    image: asd1245dss/eureka-server
+    networks:
+      default:
+        aliases:
+          - eurekaServer
+    ports:
+      - "8762:8761"
+    environment:
+      - EUREKA_SERVER_LIST=http://eurekaServer1:8761/eureka/,http://eurekaServer3:8761/eureka/
+  eurekaServer3:
+    image: asd1245dss/eureka-server
+    networks:
+      default:
+        aliases:
+          - eurekaServer
+    ports:
+      - "8763:8761"
+    environment:
+      - EUREKA_SERVER_LIST=http://eurekaServer1:8761/eureka/,http://eurekaServer2:8761/eureka/

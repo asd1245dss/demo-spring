@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: eurekaServer
+
+server:
+  port: 8761
+
+---
+eureka:
+  instance:
+    hostname: ${hostname:eurekaServer}
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_LIST:http://eurekaServer:8761}
+    fetch-registry: false
+    register-with-eureka: false
+
+spring:
+  profiles: default
+
+---
+
+eureka:
+  instance:
+    hostname: ${hostname:eurekaServer}
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_LIST:http://eurekaServer:8761}
+
+spring:
+  profiles: cluster
