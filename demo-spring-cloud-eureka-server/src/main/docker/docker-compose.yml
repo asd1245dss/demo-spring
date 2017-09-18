@@ -1,32 +1,57 @@
 version: '3'
 services:
   eurekaServer1:
-    image: asd1245dss/eureka-server
+    image: "asd1245dss/cloud-eureka-server:latest"
     networks:
-      default:
+      springcloud-overlay:
         aliases:
           - eurekaServer
     ports:
       - "8761:8761"
     environment:
       - EUREKA_SERVER_LIST=http://eurekaServer2:8761/eureka/,http://eurekaServer3:8761/eureka/
+      - SPRING_PROFILES_ACTIVE=cluster
+      - HOST_NAME=eurekaServer1
   eurekaServer2:
-    image: asd1245dss/eureka-server
+    image: "asd1245dss/cloud-eureka-server:latest"
     networks:
-      default:
+      springcloud-overlay:
         aliases:
           - eurekaServer
     ports:
       - "8762:8761"
     environment:
       - EUREKA_SERVER_LIST=http://eurekaServer1:8761/eureka/,http://eurekaServer3:8761/eureka/
+      - SPRING_PROFILES_ACTIVE=cluster
+      - HOST_NAME=eurekaServer2
   eurekaServer3:
-    image: asd1245dss/eureka-server
+    image: "asd1245dss/cloud-eureka-server:latest"
     networks:
-      default:
+      springcloud-overlay:
         aliases:
           - eurekaServer
     ports:
       - "8763:8761"
     environment:
       - EUREKA_SERVER_LIST=http://eurekaServer1:8761/eureka/,http://eurekaServer2:8761/eureka/
+      - SPRING_PROFILES_ACTIVE=cluster
+      - HOST_NAME=eurekaServer3
+  cloud-config-server:
+    image: "asd1245dss/cloud-config-server:latest"
+    networks:
+      springcloud-overlay:
+        aliases:
+          - configServer
+    ports:
+      - "8080:8080"
+    environment:
+      - EUREKA_SERVER_LIST=http://eurekaServer:8761/eureka/
+      - SPRING_PROFILES_ACTIVE=cluster
+      - HOST_NAME=cloud-config-server
+      - CONFIG_REPO_USERNAME=asd1245dss
+      - CONFIG_REPO_PASSWORD=a767940334
+
+networks:
+  springcloud-overlay:
+    external:
+      name: springcloud-overlay

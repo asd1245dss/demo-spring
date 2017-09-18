@@ -1,31 +1,35 @@
 spring:
   application:
     name: eurekaServer
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
 
 server:
   port: 8761
 
 ---
 eureka:
-  instance:
-    hostname: ${hostname:eurekaServer}
   client:
     service-url:
-      defaultZone: ${EUREKA_SERVER_LIST:http://eurekaServer:8761}
+      defaultZone: ${EUREKA_SERVER_LIST:http://eurekaServer:8761/eureka/}
     fetch-registry: false
     register-with-eureka: false
+  instance:
+    hostname: ${HOST_NAME:eurekaServer}
 
 spring:
-  profiles: default
+  profiles: dev
 
 ---
 
 eureka:
-  instance:
-    hostname: ${hostname:eurekaServer}
   client:
     service-url:
-      defaultZone: ${EUREKA_SERVER_LIST:http://eurekaServer:8761}
+      defaultZone: ${EUREKA_SERVER_LIST:http://eurekaServer:8761/eureka/}
+  instance:
+    hostname: ${HOST_NAME:eurekaServer}
+    instance-id: ${HOST_NAME:eurekaServer}:${spring.application.name}:${server.port}
 
 spring:
   profiles: cluster
