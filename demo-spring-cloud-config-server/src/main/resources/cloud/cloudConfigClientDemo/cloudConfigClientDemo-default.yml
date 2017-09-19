@@ -8,5 +8,5 @@ eureka:
     service-url:
       defaultZone: ${EUREKA_SERVER_LIST:http://eurekaServer:8761/eureka/}
   instance:
-    hostname: ${HOST_NAME:configClient}
-    instance-id: ${HOST_NAME:configClient}:${spring.application.name}:${server.port}
+    hostname: ${HOST_NAME_CONFIG_CLIENT:configClient}
+    instance-id: ${HOST_NAME_CONFIG_CLIENT:configClient}:configClient:${server.port}
