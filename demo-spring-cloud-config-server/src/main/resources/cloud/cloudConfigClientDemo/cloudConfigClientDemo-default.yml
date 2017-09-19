@@ -6,7 +6,7 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_SERVER_LIST:http://eurekaServer:8761/eureka/}
+      defaultZone: ${EUREKA_SERVER_LIST:http://eurekaServer1:8761/eureka/,http://eurekaServer2:8761/eureka/,http://eurekaServer3:8761/eureka/}
   instance:
     hostname: ${HOST_NAME_CONFIG_CLIENT:configClient}
     instance-id: ${HOST_NAME_CONFIG_CLIENT:configClient}:configClient:${server.port}
