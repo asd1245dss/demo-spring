@@ -2,3 +2,11 @@ msg: cloud-config-server
 
 server:
   port: 8881
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_LIST:http://eurekaServer:8761/eureka/}
+  instance:
+    hostname: ${HOST_NAME:configClient}
+    instance-id: ${HOST_NAME:configClient}:${spring.application.name}:${server.port}
