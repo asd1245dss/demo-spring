@@ -48,6 +48,17 @@ services:
       - EUREKA_SERVER_LIST=http://eurekaServer1:8761/eureka/,http://eurekaServer2:8761/eureka/,http://eurekaServer3:8761/eureka/
       - SPRING_PROFILES_ACTIVE=cluster
       - HOST_NAME=configServer
+  configClient:
+    image: "asd1245dss/cloud-config-client:latest"
+    spring-cloud-overlay:
+          aliases:
+            - configServer
+    ports:
+      - "8080:8080"
+    environment:
+      - EUREKA_SERVER_LIST=http://eurekaServer1:8761/eureka/,http://eurekaServer2:8761/eureka/,http://eurekaServer3:8761/eureka/
+      - CLOUD_CONFIG_SERVER=http://configServer:8888
+      - HOST_NAME=configClient
 
 networks:
   spring-cloud-overlay:

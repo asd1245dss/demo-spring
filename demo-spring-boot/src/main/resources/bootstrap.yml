@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: cloudConfigClientDemo
+  cloud:
+    config:
+      uri: ${CLOUD_CONFIG_SERVER:http://192.168.99.100:8888}
+      profile: cloudConfigClientDemo
