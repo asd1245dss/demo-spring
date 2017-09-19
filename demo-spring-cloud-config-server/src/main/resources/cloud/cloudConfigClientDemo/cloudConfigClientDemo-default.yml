@@ -1,5 +1,5 @@
-msg: '${CLOUD_CONFIG_SERVER:cloud-default-config-server}'
-msg1: '${${HOST_NAME:cloud-default-config-server}}'
+msg: ${CLOUD_CONFIG_SERVER:cloud-default-config-server}
+msg1: ${random}
 
 server:
   port: 8881
@@ -7,7 +7,7 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: '${EUREKA_SERVER_LIST:http://eurekaServer1:8761/eureka/,http://eurekaServer2:8761/eureka/,http://eurekaServer3:8761/eureka/}'
+      defaultZone: ${EUREKA_SERVER_LIST:http://eurekaServer1:8761/eureka/,http://eurekaServer2:8761/eureka/,http://eurekaServer3:8761/eureka/}
   instance:
-    hostname: '${${HOST_NAME_CONFIG_CLIENT:configClient}}'
-    instance-id: '${${HOST_NAME_CONFIG_CLIENT:configClient}:configClient:${server.port}}'
+    hostname: ${HOST_NAME_CONFIG_CLIENT:configClient}
+    instance-id: ${HOST_NAME_CONFIG_CLIENT:configClient}:configClient:${server.port}
