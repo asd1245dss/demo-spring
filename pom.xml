@@ -20,9 +20,9 @@
 
 	<modules>
 		<module>demo-spring-framework</module>
-		<module>demo-spring-boot</module>
 		<module>demo-spring-activity</module>
 		<module>demo-spring-cloud-api-gateway</module>
+		<module>demo-spring-cloud-config-client</module>
 		<module>demo-spring-cloud-config-server</module>
 		<module>demo-spring-cloud-contract-consumer</module>
 		<module>demo-spring-cloud-contract-producer</module>
