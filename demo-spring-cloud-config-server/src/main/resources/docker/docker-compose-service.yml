@@ -1,0 +1,19 @@
+version: '3'
+services:
+  configClient:
+    image: "asd1245dss/cloud-config-client:latest"
+    networks:
+      spring-cloud-overlay:
+        aliases:
+          - configClient
+    ports:
+      - "8881:8881"
+    depends_on:
+      - "configServer"
+    environment:
+      - CLOUD_CONFIG_SERVER=http://configServer:8888
+
+networks:
+  spring-cloud-overlay:
+    external:
+      name: spring-cloud-overlay
