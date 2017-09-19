@@ -5,10 +5,8 @@ spring:
     config:
       server:
         git:
-          uri: https://gitee.com/asd1245dss/demo-cloud.git
-          search-paths: demo-cloud-config-repo/cloud/**
-          username: ${CONFIG_REPO_USERNAME:username}
-          password: ${CONFIG_REPO_PASSWORD:password}
+          uri: https://github.com/asd1245dss/demo-spring
+          search-paths: demo-spring-cloud-config-server/src/main/resources/cloud/**
 
 server:
   port: 8888
@@ -20,3 +18,6 @@ eureka:
   instance:
     hostname: ${HOST_NAME:configServer}
     instance-id: ${HOST_NAME:configServer}:${spring.application.name}:${server.port}
+management:
+  security:
+    enabled: false
