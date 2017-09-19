@@ -1,4 +1,4 @@
-package com.wpg.demo.spring.demo.spring.boot;
+package com.wpg.demo.spring.demo.spring.cloud.config.client;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

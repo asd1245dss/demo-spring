@@ -51,6 +51,20 @@ services:
     environment:
       - EUREKA_SERVER_LIST=http://eurekaServer1:8761/eureka/,http://eurekaServer2:8761/eureka/,http://eurekaServer3:8761/eureka/
       - HOST_NAME=configServer
+  apiGateway:
+    image: "asd1245dss/cloud-api-gateway:latest"
+    networks:
+      spring-cloud-overlay:
+        aliases:
+          - apiGateway
+    ports:
+      - "8888:8888"
+    depends_on:
+      - "configServer"
+    environment:
+      - EUREKA_SERVER_LIST=http://eurekaServer1:8761/eureka/,http://eurekaServer2:8761/eureka/,http://eurekaServer3:8761/eureka/
+      - CLOUD_CONFIG_SERVER=http://configServer:8888
+      - HOST_NAME=apiGateway
   configClient:
     image: "asd1245dss/cloud-config-client:latest"
     networks:

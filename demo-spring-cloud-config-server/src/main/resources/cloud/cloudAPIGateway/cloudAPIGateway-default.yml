@@ -1,4 +1,4 @@
 msg: cloud-config-server
 
 server:
-  port: 8081
+  port: 8090

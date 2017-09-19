@@ -1,4 +1,4 @@
-package com.wpg.demo.spring.demo.spring.boot;
+package com.wpg.demo.spring.demo.spring.cloud.config.client;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
