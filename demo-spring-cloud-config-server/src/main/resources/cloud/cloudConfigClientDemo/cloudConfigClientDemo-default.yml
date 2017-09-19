@@ -1,4 +1,4 @@
-msg: ${HOST_NAME}-${random}
+msg: ${HOST_NAME}-${EUREKA_SERVER_LIST}
 
 server:
   port: 8881
