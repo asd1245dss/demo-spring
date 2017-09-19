@@ -1,4 +1,5 @@
 msg: ${CLOUD_CONFIG_SERVER:cloud-default-config-server}
+msg1: ${HOST_NAME:cloud-default-config-server}
 
 server:
   port: 8881
