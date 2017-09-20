@@ -1,6 +1,6 @@
 spring:
   application:
-    name: cloudAPIGateway
+    name: apiGateway
   cloud:
     config:
       uri: ${CLOUD_CONFIG_SERVER:http://localhost:8888}

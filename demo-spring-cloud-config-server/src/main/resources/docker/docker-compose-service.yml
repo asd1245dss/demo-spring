@@ -1,6 +1,6 @@
 version: '3'
 services:
-configClient:
+  configClient:
     image: "asd1245dss/cloud-config-client:latest"
     networks:
       spring-cloud-overlay:
