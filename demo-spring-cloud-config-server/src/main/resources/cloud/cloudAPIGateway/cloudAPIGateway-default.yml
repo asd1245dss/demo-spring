@@ -1,4 +1,15 @@
-msg: cloud-config-server
-
 server:
   port: 8090
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_LIST}
+  instance:
+    hostname: ${HOST_NAME}
+    instance-id: ${HOST_NAME}:configClient:${server.port}
+zuul:
+  routes:
+    client:
+      path: /api/**
+      url: http://cloudConfigClient:8888

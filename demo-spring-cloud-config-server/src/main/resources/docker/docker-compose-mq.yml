@@ -1,7 +1,7 @@
 version: '3'
 services:
   rabbit:
-    image: "rabbitmq:latest"
+    image: "rabbitmq:managment"
     networks:
       spring-cloud-overlay:
         aliases:
