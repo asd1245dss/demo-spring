@@ -12,7 +12,7 @@ spring:
       trace:
         enabled: true
   profiles:
-    active: default
+    active: dev
 
 management:
   security:
