@@ -14,4 +14,4 @@ spring:
   profiles:
     active: dev
 
-msg: ${spring.rabbit.host}
+msg: ${spring.rabbitmq.host}
