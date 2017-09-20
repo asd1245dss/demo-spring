@@ -3,11 +3,11 @@ package com.wpg.demo.spring.cloud.api.gateway;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.netflix.zuul.EnableZuulServer;
+import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableZuulServer
+@EnableZuulProxy
 public class DemoSpringCloudApiGatewayApplication {
 
 	public static void main(String[] args) {
