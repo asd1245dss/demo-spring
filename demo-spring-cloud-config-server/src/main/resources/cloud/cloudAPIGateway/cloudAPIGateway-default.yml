@@ -11,5 +11,6 @@ eureka:
 zuul:
   routes:
     client:
-      path: /api/**
-      url: http://cloudConfigClient:8888
+      path: /cloudConfigClient/**
+      serviceId: cloudConfigClient
+  prefix: /api
