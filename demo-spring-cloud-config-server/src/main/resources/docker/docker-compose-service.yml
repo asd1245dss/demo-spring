@@ -26,6 +26,7 @@ services:
     ports:
       - "8881:8881"
     environment:
+      - PROFILE=default
       - EUREKA_SERVER_LIST=http://eurekaServer1:8761/eureka/,http://eurekaServer2:8761/eureka/,http://eurekaServer3:8761/eureka/
       - CLOUD_CONFIG_SERVER=http://configServer:8888
       - RABBIT_HOST=http://rabbitmq:5672

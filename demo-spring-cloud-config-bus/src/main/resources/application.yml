@@ -8,3 +8,8 @@ spring:
     bus:
       trace:
         enabled: true
+  profiles:
+    active: dev
+management:
+  security:
+    enabled: false
