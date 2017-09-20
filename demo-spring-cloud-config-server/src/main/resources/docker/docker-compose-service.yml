@@ -29,7 +29,7 @@ services:
       - PROFILE=default
       - EUREKA_SERVER_LIST=http://eurekaServer1:8761/eureka/,http://eurekaServer2:8761/eureka/,http://eurekaServer3:8761/eureka/
       - CLOUD_CONFIG_SERVER=http://configServer:8888
-      - RABBIT_HOST=rabbitmq
+      - RABBIT_HOST=rabbit
       - RABBIT_USERNAME=root
       - RABBIT_PASSWORD=123456
       - HOST_NAME=configClient
