@@ -13,5 +13,5 @@ zuul:
   routes:
     configClient:
       path: /configClient/**
-      serviceId: configClient
+      serviceId: CONFIGCLIENT
   prefix: /api
