@@ -8,9 +8,10 @@ eureka:
   instance:
     hostname: ${HOST_NAME}
     instance-id: ${HOST_NAME}:apiGateway:${server.port}
+
 zuul:
   routes:
-    client:
-      path: /cloudConfigClient/**
-      serviceId: cloudConfigClient
+    configClient:
+      path: /configClient/**
+      serviceId: configClient
   prefix: /api
