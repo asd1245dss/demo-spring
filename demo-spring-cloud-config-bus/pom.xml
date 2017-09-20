@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.wpg.demo.spring.cloud</groupId>
-	<artifactId>demo-spring-cloud-api-gateway</artifactId>
+	<artifactId>demo-spring-cloud-config-bus</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>demo-spring-cloud-api-gateway</name>
+	<name>demo-spring-cloud-config-bus</name>
 	<description>Demo project for Spring Boot</description>
 
 	<parent>
@@ -20,11 +20,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-zuul</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
+			<artifactId>spring-cloud-starter-bus-amqp</artifactId>
 		</dependency>
 	</dependencies>
 

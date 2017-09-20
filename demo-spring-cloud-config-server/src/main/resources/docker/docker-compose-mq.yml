@@ -1,7 +1,7 @@
 version: '3'
 services:
   rabbit:
-    image: "rabbitmq:managment"
+    image: rabbitmq:management
     networks:
       spring-cloud-overlay:
         aliases:
@@ -9,6 +9,9 @@ services:
     ports:
       - "15672:15672"
       - "5672:5672"
+    deploy:
+      placement:
+        constraints: [node.role == worker]
     environment:
       - RABBITMQ_ERLANG_COOKIE=SWQOKODSQALRPCLNMEQG
       - RABBITMQ_DEFAULT_USER=root

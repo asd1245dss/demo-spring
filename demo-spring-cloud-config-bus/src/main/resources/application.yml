@@ -1,0 +1,10 @@
+spring:
+  rabbitmq:
+    host: ${RABBIT_HOST}
+    port: 5672
+    username: ${RABBIT_USERNAME}
+    password: ${RABBIT_PASSWORD}
+  cloud:
+    bus:
+      trace:
+        enabled: true

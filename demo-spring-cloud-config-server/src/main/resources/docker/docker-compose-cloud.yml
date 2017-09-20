@@ -1,7 +1,7 @@
 version: '3'
 services:
   eurekaServer1:
-    image: "asd1245dss/cloud-eureka-server:latest"
+    image: asd1245dss/cloud-eureka-server:latest
     networks:
       spring-cloud-overlay:
         aliases:
@@ -13,7 +13,7 @@ services:
       - SPRING_PROFILES_ACTIVE=cluster
       - HOST_NAME=eurekaServer1
   eurekaServer2:
-    image: "asd1245dss/cloud-eureka-server:latest"
+    image: asd1245dss/cloud-eureka-server:latest
     networks:
       spring-cloud-overlay:
         aliases:
@@ -25,7 +25,7 @@ services:
       - SPRING_PROFILES_ACTIVE=cluster
       - HOST_NAME=eurekaServer2
   eurekaServer3:
-    image: "asd1245dss/cloud-eureka-server:latest"
+    image: asd1245dss/cloud-eureka-server:latest
     networks:
       spring-cloud-overlay:
         aliases:
@@ -37,7 +37,7 @@ services:
       - SPRING_PROFILES_ACTIVE=cluster
       - HOST_NAME=eurekaServer3
   configServer:
-    image: "asd1245dss/cloud-config-server:latest"
+    image: asd1245dss/cloud-config-server:latest
     networks:
       spring-cloud-overlay:
         aliases:
@@ -52,7 +52,7 @@ services:
       - EUREKA_SERVER_LIST=http://eurekaServer1:8761/eureka/,http://eurekaServer2:8761/eureka/,http://eurekaServer3:8761/eureka/
       - HOST_NAME=configServer
   apiGateway:
-    image: "asd1245dss/cloud-api-gateway:latest"
+    image: asd1245dss/cloud-api-gateway:latest
     networks:
       spring-cloud-overlay:
         aliases:
@@ -60,7 +60,7 @@ services:
     ports:
       - "8090:8090"
     depends_on:
-      - "configServer"
+      - "configBus"
     environment:
       - EUREKA_SERVER_LIST=http://eurekaServer1:8761/eureka/,http://eurekaServer2:8761/eureka/,http://eurekaServer3:8761/eureka/
       - CLOUD_CONFIG_SERVER=http://configServer:8888

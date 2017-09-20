@@ -1,0 +1,20 @@
+version: '3'
+services:
+  visualizer:
+    image: dockersamples/visualizer:stable
+    networks:
+      spring-cloud-overlay:
+        aliases:
+          - visualizer
+    ports:
+      - "9090:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+
+networks:
+  spring-cloud-overlay:
+    external:
+      name: spring-cloud-overlay

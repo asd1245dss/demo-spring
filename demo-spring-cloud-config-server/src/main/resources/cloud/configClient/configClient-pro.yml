@@ -1,4 +1,12 @@
-msg: cloud-config-server
+msg: ${HOST_NAME}-${EUREKA_SERVER_LIST}
 
 server:
-  port: 8081
+  port: 8881
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_LIST}
+  instance:
+    hostname: ${HOST_NAME}
+    instance-id: ${HOST_NAME}:configClient:${server.port}

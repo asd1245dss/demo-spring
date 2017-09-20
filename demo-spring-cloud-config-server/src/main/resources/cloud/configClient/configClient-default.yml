@@ -3,6 +3,17 @@ msg: ${HOST_NAME}-${EUREKA_SERVER_LIST}
 server:
   port: 8881
 
+spring:
+  rabbitmq:
+    host: ${RABBIT_HOST}
+    port: 5672
+    username: ${RABBIT_USERNAME}
+    password: ${RABBIT_PASSWORD}
+  cloud:
+    bus:
+      trace:
+        enabled: true
+
 eureka:
   client:
     service-url:
