@@ -13,6 +13,8 @@ spring:
     bus:
       trace:
         enabled: true
+  profiles:
+    active: default
 
 management:
   security:
