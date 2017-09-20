@@ -14,4 +14,8 @@ spring:
   profiles:
     active: dev
 
+management:
+  security:
+    enabled: false
+
 msg: ${spring.rabbitmq.host}
