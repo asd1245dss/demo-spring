@@ -18,4 +18,4 @@ management:
   security:
     enabled: false
 
-msg: ${spring.rabbitmq.host}-${JAVA_HOME}
+msg: ${spring.rabbitmq.host}
