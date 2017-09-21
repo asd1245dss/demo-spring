@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: bootFeign
+  cloud:
+    config:
+      uri: ${CLOUD_CONFIG_SERVER:http://localhost:8888}

@@ -59,8 +59,6 @@ services:
           - apiGateway
     ports:
       - "8090:8090"
-    depends_on:
-      - "configBus"
     environment:
       - EUREKA_SERVER_LIST=http://eurekaServer1:8761/eureka/,http://eurekaServer2:8761/eureka/,http://eurekaServer3:8761/eureka/
       - CLOUD_CONFIG_SERVER=http://configServer:8888

@@ -1,22 +1,5 @@
 version: '3'
 services:
-#  configBus:
-#    image: "asd1245dss/cloud-config-bus:latest"
-#    networks:
-#      spring-cloud-overlay:
-#        aliases:
-#          - configBus
-#    ports:
-#      - "8090:8090"
-#    depends_on:
-#      - "configServer"
-#    environment:
-#      - EUREKA_SERVER_LIST=http://eurekaServer1:8761/eureka/,http://eurekaServer2:8761/eureka/,http://eurekaServer3:8761/eureka/
-#      - CLOUD_CONFIG_SERVER=http://configServer:8888
-#      - RABBIT_HOST=http://rabbitmq:5672
-#      - RABBIT_USERNAME=root
-#      - RABBIT_PASSWORD=123456
-#      - HOST_NAME=configBus
   configClient:
     image: asd1245dss/cloud-config-client:latest
     networks:
@@ -33,6 +16,22 @@ services:
       - RABBIT_USERNAME=root
       - RABBIT_PASSWORD=123456
       - HOST_NAME=configClient
+  bootFeign:
+    image: asd1245dss/cloud-boot-feign:latest
+    networks:
+      spring-cloud-overlay:
+        aliases:
+          - bootFeign
+    ports:
+      - "8881:8881"
+    environment:
+      - PROFILE=default
+      - EUREKA_SERVER_LIST=http://eurekaServer1:8761/eureka/,http://eurekaServer2:8761/eureka/,http://eurekaServer3:8761/eureka/
+      - CLOUD_CONFIG_SERVER=http://configServer:8888
+      - RABBIT_HOST=rabbit
+      - RABBIT_USERNAME=root
+      - RABBIT_PASSWORD=123456
+      - HOST_NAME=bootFeign
 
 networks:
   spring-cloud-overlay:

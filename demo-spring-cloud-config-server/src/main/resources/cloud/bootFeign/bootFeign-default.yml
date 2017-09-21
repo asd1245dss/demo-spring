@@ -1,0 +1,27 @@
+server:
+  port: 8881
+
+spring:
+  rabbitmq:
+    host: ${RABBIT_HOST}
+    port: 5672
+    username: ${RABBIT_USERNAME}
+    password: ${RABBIT_PASSWORD}
+  cloud:
+    bus:
+      trace:
+        enabled: true
+  profiles:
+    active: ${PROFILE}
+
+management:
+  security:
+    enabled: false
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_LIST}
+  instance:
+    hostname: ${HOST_NAME}
+    instance-id: ${HOST_NAME}:bootFeign:${server.port}
