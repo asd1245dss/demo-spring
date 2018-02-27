@@ -1,0 +1,42 @@
+version: '3'
+services:
+  postgres:
+    image: postgres
+    networks:
+      spring-cloud-overlay:
+        aliases:
+          - postgres
+    volumes:
+      - /home/docker/postgresql:/var/lib/postgresql
+    deploy:
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == manager]
+    environment:
+      - POSTGRES_USER=gitlab
+      - POSTGRES_PASSWORD=gitlabAdmin
+  redis:
+    image: redis
+    networks:
+      spring-cloud-overlay:
+        aliases:
+          - redis
+    volumes:
+      - /home/docker/redis/config:/var/lib/redis
+#      - /home/docker/redis/log:/var/lib/redis
+#      - /home/docker/redis/data:/var/lib/redis
+    deploy:
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == manager]
+
+#volumes:
+#  gitlab-postgre-volume: /home/docker/postgresql
+#  gitlab-redis-volume: /home/docker/redis
+
+networks:
+  spring-cloud-overlay:
+    external:
+      name: spring-cloud-overlay

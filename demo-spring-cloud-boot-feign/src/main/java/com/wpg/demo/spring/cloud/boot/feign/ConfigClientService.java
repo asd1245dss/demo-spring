@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @FeignClient("configClient")
 public interface ConfigClientService {
 
-    @GetMapping("/msg")
+    @GetMapping("/hello/msg")
     String hello();
 
 }

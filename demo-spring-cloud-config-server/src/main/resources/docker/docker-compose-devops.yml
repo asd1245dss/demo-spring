@@ -1,0 +1,31 @@
+version: '3'
+services:
+  gitlab:
+    image: "gitlab/gitlab-ce:latest"
+    networks:
+      spring-cloud-overlay:
+        aliases:
+          - gitlab
+    volumes:
+      - "/data/docker/gitlab/config:/etc/gitlab"
+      - "/data/docker/gitlab/log:/var/log/gitlab"
+      - "/data/docker/gitlab/data:/var/opt/gitlab"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "1022:22"
+#    depends_on:
+#      - "postgres"
+#      - "redis"
+    deploy:
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == manager]
+    environment:
+      - GITLAB_OMNIBUS_CONFIG="https://ci.wapwag.tk/git"
+
+networks:
+  spring-cloud-overlay:
+    external:
+      name: spring-cloud-overlay
